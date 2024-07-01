@@ -3,6 +3,9 @@ require("dotenv").config();
 // set up mongoose connection to MongoDB
 const mongoose = require("mongoose");
 mongoose.connect(process.env.MONGO_URI);
+mongoose.connection.on("connected", () => {
+  console.log("server is running");
+});
 
 // use the mongoose models
 const User = require("./models/user.model");
@@ -27,9 +30,6 @@ app.use(
 );
 
 // start the Express server
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT} 🌏`);
-});
 
 // server connection test
 app.get("/", (req, res) => {
@@ -41,9 +41,7 @@ app.post("/create-account", async (req, res) => {
   const { fullName, email, password } = req.body;
 
   if (!fullName) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Full Name is required" });
+    return res.status(400).json({ error: true, message: "Full Name is required" });
   }
 
   if (!email) {
@@ -51,9 +49,7 @@ app.post("/create-account", async (req, res) => {
   }
 
   if (!password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Password is required" });
+    return res.status(400).json({ error: true, message: "Password is required" });
   }
 
   const isUser = await User.findOne({ email: email });
@@ -149,9 +145,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
   }
 
   if (!content) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Content is required" });
+    return res.status(400).json({ error: true, message: "Content is required" });
   }
 
   try {
@@ -184,9 +178,7 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
   const { user } = req.user;
 
   if (!title && !content && !tags) {
-    return res
-      .status(400)
-      .json({ error: true, message: "No changes provided" });
+    return res.status(400).json({ error: true, message: "No changes provided" });
   }
 
   try {
@@ -298,9 +290,7 @@ app.get("/search-notes", authenticateToken, async (req, res) => {
   const { query } = req.query;
 
   if (!query) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Search query is required" });
+    return res.status(400).json({ error: true, message: "Search query is required" });
   }
 
   try {
@@ -323,6 +313,9 @@ app.get("/search-notes", authenticateToken, async (req, res) => {
       message: "Internal Server Error",
     });
   }
+});
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT} 🌏`);
 });
 
 module.exports = app;
