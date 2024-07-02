@@ -2,9 +2,9 @@ require("dotenv").config();
 
 // set up mongoose connection to MongoDB
 const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGODB_URI,);
 mongoose.connection.on("connected", () => {
-  console.log("server is running");
+  console.log("server is running go go");
 });
 
 // use the mongoose models
@@ -15,19 +15,19 @@ const Note = require("./models/note.model");
 const express = require("express");
 const cors = require("cors");
 
-const PORT = process.env.PORT || 8082;
+const PORT = process.env.PORT || 8000;
 const app = express();
-
-// use jwt and token to authenticate access to protected routes
-const jwt = require("jsonwebtoken");
-const { authenticateToken } = require("./utilities");
-
-app.use(express.json());
 app.use(
   cors({
     origin: "*",
   })
 );
+// use jwt and token to authenticate access to protected routes
+const jwt = require("jsonwebtoken");
+const { authenticateToken } = require("./utilities");
+
+app.use(express.json());
+
 
 // start the Express server
 
@@ -315,7 +315,7 @@ app.get("/search-notes", authenticateToken, async (req, res) => {
   }
 });
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT} 🌏`);
+  console.log(`อย่าให้มีครั้งที่ 2 ${PORT} 🌏`);
 });
 
 module.exports = app;
